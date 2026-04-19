@@ -623,6 +623,16 @@ export const bookingService = {
     );
   },
 
+  async getByUser(): Promise<{ bookings: any[]; count: number }> {
+    const token = getStoredToken();
+    if (!token) throw new Error('Not authenticated');
+    return apiCall(
+      API_ENDPOINTS.BOOKINGS.GET_BY_USER,
+      { method: 'POST', body: JSON.stringify({}) },
+      token
+    );
+  },
+
   async bookRoom(data: BookingData): Promise<any> {
     const token = getStoredToken() || undefined;
     return apiCall(

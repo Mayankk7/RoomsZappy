@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { Navigation } from '../components/Navigation';
 import { Footer } from '../components/Footer';
 import { resolveImage, handleImageError } from '../data/siteConfig';
+import { bookingService } from '../services/api';
+import { STORAGE_KEYS } from '../config/api';
 import { 
   Calendar, MapPin, X, Clock, Users, Download, 
   Mail, Phone, CheckCircle2, XCircle, History,
-  ArrowRight, Star, AlertCircle
+  ArrowRight, Star, AlertCircle, Loader
 } from 'lucide-react';
 
 interface Booking {
@@ -27,64 +29,72 @@ interface Booking {
   phone?: string;
 }
 
-const mockBookings: Booking[] = [
-  {
-    id: 'UH7XK2MN9',
-    hotelName: 'Sultanahmet Boutique Hotel',
-    location: 'Sultanahmet, Old City',
-    image: 'https://images.unsplash.com/photo-1641851962761-43d3c1a34360?w=600',
-    roomName: 'Standard Double Room',
-    checkIn: '2026-03-15',
-    checkOut: '2026-03-18',
-    guests: 2,
-    nights: 3,
-    roomPrice: 42,
-    total: 138,
-    status: 'upcoming',
-    email: 'john@example.com',
-    phone: '+90 555 123 4567'
-  },
-  {
-    id: 'UH4PQ8RS1',
-    hotelName: 'Taksim Central Stay',
-    location: 'Taksim, Beyoğlu',
-    image: 'https://images.unsplash.com/photo-1648766378129-11c3d8d0da05?w=600',
-    roomName: 'Economy Room',
-    checkIn: '2026-02-10',
-    checkOut: '2026-02-12',
-    guests: 2,
-    nights: 2,
-    roomPrice: 38,
-    total: 88,
-    status: 'past',
-    rating: 5
-  },
-  {
-    id: 'UH9MN3KL2',
-    hotelName: 'Kadıköy Harbor View',
-    location: 'Kadıköy, Asian Side',
-    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600',
-    roomName: 'Deluxe Room with Sea View',
-    checkIn: '2026-01-20',
-    checkOut: '2026-01-22',
-    guests: 2,
-    nights: 2,
-    roomPrice: 45,
-    total: 102,
-    status: 'past',
-    rating: 4
-  }
-];
+function mapApiBooking(raw: any): Booking {
+  const checkIn = raw.fromDate || raw.fromdate || raw.check_in_date || '';
+  const checkOut = raw.toDate || raw.todate || raw.check_out_date || '';
+  const nights = checkIn && checkOut
+    ? Math.max(1, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000))
+    : 1;
+
+  const rawStatus = (raw.status || '').toLowerCase();
+  let status: 'upcoming' | 'past' | 'cancelled' = 'upcoming';
+  if (rawStatus === 'cancelled' || rawStatus === 'canceled') status = 'cancelled';
+  else if (rawStatus === 'completed' || rawStatus === 'past' || new Date(checkOut) < new Date()) status = 'past';
+
+  return {
+    id: String(raw.id || raw._id || raw.transactionId || raw.transactionid || ''),
+    hotelName: raw.hotelName || raw.hotel_name || (raw.hotelId ? `Hotel #${raw.hotelId}` : 'Hotel'),
+    location: raw.location || raw.address || '',
+    image: raw.image || raw.hotel_image || '',
+    roomName: raw.room || raw.room_name || raw.roomName || (raw.roomId ? `Room #${raw.roomId}` : 'Room'),
+    checkIn,
+    checkOut,
+    guests: raw.guests || raw.num_guests || 1,
+    nights,
+    roomPrice: Number(raw.roomPrice || raw.room_price || (raw.totalAmount || raw.totalamount || 0) / Math.max(nights, 1)),
+    total: Number(raw.totalAmount || raw.totalamount || raw.total_price || 0),
+    status,
+    rating: raw.rating || undefined,
+    email: raw.email || undefined,
+    phone: raw.phone || undefined,
+  };
+}
 
 export function GuestPortal() {
+  const navigate = useNavigate();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
-  const filteredBookings = mockBookings.filter(b => b.status === activeTab);
-  const upcomingCount = mockBookings.filter(b => b.status === 'upcoming').length;
-  const pastCount = mockBookings.filter(b => b.status === 'past').length;
-  const cancelledCount = mockBookings.filter(b => b.status === 'cancelled').length;
+  useEffect(() => {
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    if (!token) {
+      navigate('/auth?returnUrl=/portal', { replace: true });
+      return;
+    }
+
+    bookingService.getByUser()
+      .then((res) => {
+        const mapped = (res.bookings || []).map(mapApiBooking);
+        setBookings(mapped);
+      })
+      .catch((err) => {
+        if (err?.status === 401 || err?.status === 403 || err?.message?.includes('authenticated')) {
+          navigate('/auth?returnUrl=/portal', { replace: true });
+          return;
+        }
+        setFetchError(err?.message || 'Failed to load bookings');
+      })
+      .finally(() => setLoading(false));
+  }, [navigate]);
+
+  const filteredBookings = bookings.filter(b => b.status === activeTab);
+  const upcomingCount = bookings.filter(b => b.status === 'upcoming').length;
+  const pastCount = bookings.filter(b => b.status === 'past').length;
+  const cancelledCount = bookings.filter(b => b.status === 'cancelled').length;
 
   const handleCancelClick = (booking: Booking) => {
     setSelectedBooking(booking);
@@ -113,8 +123,32 @@ export function GuestPortal() {
       <Navigation />
 
       <main className="max-w-[1840px] mx-auto px-10 py-10">
-        {/* Header Section */}
-        <div className="mb-8">
+
+        {/* Loading state */}
+        {loading && (
+          <div className="flex items-center justify-center py-32">
+            <Loader className="w-10 h-10 text-[#1abc9c] animate-spin" />
+          </div>
+        )}
+
+        {/* Error state */}
+        {!loading && fetchError && (
+          <div className="bg-white rounded-2xl border border-[#fee2e2] p-12 text-center max-w-lg mx-auto mt-12">
+            <AlertCircle className="w-12 h-12 text-[#ef4444] mx-auto mb-4" />
+            <h3 className="font-['Poppins:SemiBold',sans-serif] text-[22px] text-[#3b3b3b] mb-2">Could not load bookings</h3>
+            <p className="font-['Inter:Regular',sans-serif] text-[15px] text-[#6b7280] mb-6">{fetchError}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-[#1abc9c] text-white px-6 py-3 rounded-xl hover:bg-[#16a085] transition-colors font-['Inter:SemiBold',sans-serif] text-[14px]"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {!loading && !fetchError && (<>
+          {/* Header Section */}
+          <div className="mb-8">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="font-['Poppins:Bold',sans-serif] text-[40px] leading-[48px] text-[#3b3b3b] mb-2">
@@ -132,7 +166,7 @@ export function GuestPortal() {
                   Total Bookings
                 </div>
                 <div className="font-['Poppins:Bold',sans-serif] text-[28px] text-[#1abc9c]">
-                  {mockBookings.length}
+                  {bookings.length}
                 </div>
               </div>
             </div>
@@ -474,6 +508,7 @@ export function GuestPortal() {
             </div>
           </div>
         </div>
+        </>)}
       </main>
 
       <Footer />
