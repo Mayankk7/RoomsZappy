@@ -588,7 +588,7 @@ export function HotelDetailPageNew() {
   const selectedRoom = bookableRooms.find((r) => r.id === selectedRoomId) ?? null;
 
   const roomCountOptions = useMemo(() => {
-    const max = Math.max(1, Math.min(selectedRoom?.available ?? 1, 8));
+    const max = Math.max(4, Math.min(selectedRoom?.available ?? 4, 4));
     return Array.from({ length: max }, (_, i) => i + 1);
   }, [selectedRoom]);
 
@@ -820,7 +820,7 @@ export function HotelDetailPageNew() {
                   ))}
                 </select>
                 <p className="mt-1 text-[12px] text-[#9ca3af]">
-                  {selectedRoom ? `${selectedRoom.available} available` : "Select a room first"}
+                  {selectedRoom ? `Up to 4 rooms` : "Select a room first"}
                 </p>
               </div>
             </div>
