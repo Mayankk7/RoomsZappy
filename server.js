@@ -52,6 +52,11 @@ app.use("/api/bookings", bookingRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/payments", paymentsRoute);
 
+// Keep health checks independent from database state.
+app.get('/api/health', (_request, response) => {
+    response.status(200).json({ status: 'ok' });
+});
+
 const port = process.env.PORT || 5000;
 
 const explicitStaticDir = process.env.FRONTEND_STATIC_DIR
