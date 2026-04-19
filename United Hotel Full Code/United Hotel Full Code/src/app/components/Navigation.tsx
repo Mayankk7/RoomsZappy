@@ -128,8 +128,7 @@ export function Navigation() {
             {/* Login Button with Dropdown */}
             <div className="relative">
               <button
-                onMouseEnter={() => setIsLoginOpen(true)}
-                onMouseLeave={() => setIsLoginOpen(false)}
+                onClick={() => setIsLoginOpen(!isLoginOpen)}
                 className="flex items-center gap-2 text-[#3b3b3b] hover:text-[#1abc9c] transition-colors min-h-[44px] px-4 rounded-lg hover:bg-gray-50"
                 aria-expanded={isLoginOpen}
                 aria-haspopup="true"
@@ -142,8 +141,6 @@ export function Navigation() {
               </button>
               {isLoginOpen && (
                 <div
-                  onMouseEnter={() => setIsLoginOpen(true)}
-                  onMouseLeave={() => setIsLoginOpen(false)}
                   className="absolute top-full right-0 pt-2 w-56"
                   role="menu"
                 >

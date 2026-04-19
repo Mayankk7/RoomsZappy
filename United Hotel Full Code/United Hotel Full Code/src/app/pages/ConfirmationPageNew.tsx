@@ -62,14 +62,14 @@ export function ConfirmationPageNew() {
     <div className="bg-[#fafafa] min-h-screen">
       <Navigation />
 
-      <main className="max-w-[820px] mx-auto px-10 py-12">
+      <main className="max-w-[820px] mx-auto px-4 md:px-10 py-8 md:py-12">
         {/* Success Header */}
         <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-[#10b981] rounded-full mb-6 shadow-lg">
             <Check className="w-10 h-10 text-white stroke-[3]" />
           </div>
           
-          <h1 className="font-['Poppins:Bold',sans-serif] text-[42px] leading-[52px] text-[#3b3b3b] mb-3">
+          <h1 className="font-['Poppins:Bold',sans-serif] text-[30px] md:text-[42px] leading-tight md:leading-[52px] text-[#3b3b3b] mb-3">
             Booking Confirmed!
           </h1>
           
@@ -88,13 +88,13 @@ export function ConfirmationPageNew() {
         </div>
 
         {/* Reservation Details Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-[#eaeaea] p-8 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+        <div className="bg-white rounded-2xl shadow-sm border border-[#eaeaea] p-4 md:p-8 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
           <h2 className="font-['Poppins:SemiBold',sans-serif] text-[24px] text-[#3b3b3b] mb-6">
             Reservation Details
           </h2>
 
           {/* Hotel Info */}
-          <div className="flex gap-6 mb-8 pb-8 border-b border-[#eaeaea]">
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-6 mb-8 pb-8 border-b border-[#eaeaea]">
             <img
               src={resolveImage(bookingData.hotel.image)}
               alt={bookingData.hotel.name}
@@ -118,7 +118,7 @@ export function ConfirmationPageNew() {
           </div>
 
           {/* Dates */}
-          <div className="grid grid-cols-2 gap-6 mb-8 pb-8 border-b border-[#eaeaea]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8 pb-8 border-b border-[#eaeaea]">
             <div>
               <div className="flex items-center gap-2 text-[#8c8c8c] mb-3">
                 <Calendar className="w-4 h-4" />
@@ -223,7 +223,7 @@ export function ConfirmationPageNew() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
           <button
             onClick={handleDownloadInvoice}
             className="flex items-center justify-center gap-3 bg-white border-2 border-[#eaeaea] text-[#3b3b3b] px-6 py-4 rounded-xl hover:border-[#1abc9c] hover:text-[#1abc9c] transition-all font-['Inter:SemiBold',sans-serif] text-[15px] group"
@@ -263,7 +263,7 @@ export function ConfirmationPageNew() {
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
           <Link
             to="/portal"
             className="flex items-center justify-center gap-2 bg-[#1abc9c] text-white px-8 py-4 rounded-xl hover:bg-[#16a085] transition-all hover:shadow-lg font-['Inter:Bold',sans-serif] text-[16px]"

@@ -117,10 +117,10 @@ export function AuthPage() {
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
       {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-10">
+      <div className="flex-1 flex items-center justify-center p-5 md:p-10">
         <div className="w-full max-w-[480px]">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-10">
+          <Link to="/" className="flex items-center gap-2 mb-6 md:mb-10">
             <div className="h-[26px] w-7">
               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 28 26">
                 <mask fill="white" id="path-1-inside-1_20_512">
@@ -136,7 +136,7 @@ export function AuthPage() {
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="font-['Poppins:Bold',sans-serif] text-[36px] leading-11 text-[#3b3b3b] mb-3">
+            <h1 className="font-['Poppins:Bold',sans-serif] text-[28px] md:text-[36px] leading-tight text-[#3b3b3b] mb-3">
               Complete Your Booking
             </h1>
             <p className="font-['Inter:Regular',sans-serif] text-[16px] text-[#6b7280]">

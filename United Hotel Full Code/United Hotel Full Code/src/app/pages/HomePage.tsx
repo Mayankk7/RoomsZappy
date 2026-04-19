@@ -391,14 +391,14 @@ function FAQSection() {
   ];
 
   return (
-    <section id="faqs" className="py-24 bg-[#fafafa]">
-      <div className="max-w-[744px] mx-auto px-10">
+    <section id="faqs" className="py-12 md:py-24 bg-[#fafafa]">
+      <div className="max-w-[744px] mx-auto px-4 md:px-10">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="font-['Poppins:Bold',sans-serif] text-[48px] leading-[60px] text-[#3b3b3b] mb-4">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="font-['Poppins:Bold',sans-serif] text-[28px] md:text-[48px] leading-tight md:leading-[60px] text-[#3b3b3b] mb-3 md:mb-4">
             {t("Frequently Asked Questions")}
           </h2>
-          <p className="font-['Inter:Regular',sans-serif] text-[18px] text-[#6b7280]">
+          <p className="font-['Inter:Regular',sans-serif] text-[15px] md:text-[18px] text-[#6b7280]">
             {t("Everything you need to know about hotels in Turkey")}
           </p>
         </div>

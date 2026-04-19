@@ -122,7 +122,7 @@ export function GuestPortal() {
     <div className="bg-[#fafafa] min-h-screen">
       <Navigation />
 
-      <main className="max-w-[1840px] mx-auto px-10 py-10">
+      <main className="max-w-[1840px] mx-auto px-4 py-6 md:px-10 md:py-10">
 
         {/* Loading state */}
         {loading && (
@@ -148,24 +148,24 @@ export function GuestPortal() {
 
         {!loading && !fetchError && (<>
           {/* Header Section */}
-          <div className="mb-8">
-          <div className="flex items-start justify-between mb-6">
+          <div className="mb-6 md:mb-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6">
             <div>
-              <h1 className="font-['Poppins:Bold',sans-serif] text-[40px] leading-[48px] text-[#3b3b3b] mb-2">
+              <h1 className="font-['Poppins:Bold',sans-serif] text-[28px] md:text-[40px] leading-tight md:leading-[48px] text-[#3b3b3b] mb-2">
                 My Bookings
               </h1>
-              <p className="font-['Inter:Regular',sans-serif] text-[16px] text-[#6b7280]">
+              <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[16px] text-[#6b7280]">
                 Manage your past and upcoming hotel reservations
               </p>
             </div>
 
             {/* Quick Stats */}
             <div className="flex items-center gap-4">
-              <div className="bg-white rounded-xl px-6 py-4 border border-[#eaeaea]">
+              <div className="bg-white rounded-xl px-4 py-3 md:px-6 md:py-4 border border-[#eaeaea]">
                 <div className="font-['Inter:Regular',sans-serif] text-[13px] text-[#8c8c8c] mb-1">
                   Total Bookings
                 </div>
-                <div className="font-['Poppins:Bold',sans-serif] text-[28px] text-[#1abc9c]">
+                <div className="font-['Poppins:Bold',sans-serif] text-[24px] md:text-[28px] text-[#1abc9c]">
                   {bookings.length}
                 </div>
               </div>
@@ -173,7 +173,8 @@ export function GuestPortal() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-3 bg-white p-2 rounded-xl border border-[#eaeaea] inline-flex">
+          <div className="w-full overflow-x-auto pb-1">
+          <div className="flex gap-2 md:gap-3 bg-white p-1.5 md:p-2 rounded-xl border border-[#eaeaea] min-w-max">
             <button
               onClick={() => setActiveTab('upcoming')}
               className={`
@@ -237,6 +238,7 @@ export function GuestPortal() {
               )}
             </button>
           </div>
+          </div>
         </div>
 
         {/* Bookings List */}
@@ -247,9 +249,9 @@ export function GuestPortal() {
                 key={booking.id}
                 className="bg-white rounded-2xl border border-[#eaeaea] overflow-hidden hover:shadow-xl transition-all duration-300"
               >
-                <div className="grid grid-cols-[320px_1fr] gap-6 p-6">
+                <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 md:gap-6 p-4 md:p-6">
                   {/* Image */}
-                  <div className="relative rounded-xl overflow-hidden group">
+                  <div className="relative rounded-xl overflow-hidden group h-52 md:h-auto">
                     <img
                       src={resolveImage(booking.image)}
                       alt={booking.hotelName}
@@ -276,9 +278,9 @@ export function GuestPortal() {
                   {/* Content */}
                   <div className="flex flex-col">
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h3 className="font-['Poppins:SemiBold',sans-serif] text-[24px] text-[#3b3b3b] mb-2">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-2">
+                          <div className="flex-1">
+                            <h3 className="font-['Poppins:SemiBold',sans-serif] text-[20px] md:text-[24px] text-[#3b3b3b] mb-2">
                             {booking.hotelName}
                           </h3>
                           
@@ -297,8 +299,8 @@ export function GuestPortal() {
                         </div>
 
                         {/* Price */}
-                        <div className="text-right">
-                          <div className="font-['Poppins:Bold',sans-serif] text-[32px] leading-[32px] text-[#3b3b3b] mb-1">
+                        <div className="sm:text-right">
+                          <div className="font-['Poppins:Bold',sans-serif] text-[26px] md:text-[32px] leading-tight text-[#3b3b3b] mb-1">
                             ${booking.total}
                           </div>
                           <div className="font-['Inter:Regular',sans-serif] text-[14px] text-[#8c8c8c]">
@@ -308,7 +310,7 @@ export function GuestPortal() {
                       </div>
 
                       {/* Booking Details Grid */}
-                      <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-4">
                         <div className="bg-[#fafafa] rounded-xl p-4 border border-[#eaeaea]">
                           <div className="flex items-center gap-2 mb-2">
                             <Calendar className="w-4 h-4 text-[#1abc9c]" />
@@ -447,7 +449,7 @@ export function GuestPortal() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-[#eaeaea] p-16 text-center">
+          <div className="bg-white rounded-2xl border border-[#eaeaea] p-8 md:p-16 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-20 h-20 bg-[#f3f4f6] rounded-full flex items-center justify-center mx-auto mb-6">
                 {activeTab === 'upcoming' && <Calendar className="w-10 h-10 text-[#8c8c8c]" />}
@@ -479,8 +481,8 @@ export function GuestPortal() {
         )}
 
         {/* Help Section */}
-        <div className="mt-12 bg-gradient-to-br from-[#1abc9c]/10 to-[#1abc9c]/5 rounded-2xl p-8 border border-[#1abc9c]/20">
-          <div className="flex items-start gap-6">
+        <div className="mt-8 md:mt-12 bg-gradient-to-br from-[#1abc9c]/10 to-[#1abc9c]/5 rounded-2xl p-5 md:p-8 border border-[#1abc9c]/20">
+          <div className="flex flex-col sm:flex-row items-start gap-4 md:gap-6">
             <div className="w-12 h-12 bg-[#1abc9c] rounded-xl flex items-center justify-center flex-shrink-0">
               <Phone className="w-6 h-6 text-white" />
             </div>
@@ -491,7 +493,7 @@ export function GuestPortal() {
               <p className="font-['Inter:Regular',sans-serif] text-[15px] text-[#6b7280] mb-4">
                 Our 24/7 customer support team is here to assist you with any questions or changes to your reservations.
               </p>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 md:gap-4">
                 <Link
                   to="/support"
                   className="bg-[#1abc9c] text-white px-6 py-3 rounded-lg hover:bg-[#16a085] transition-colors font-['Inter:SemiBold',sans-serif] text-[14px]"
@@ -516,7 +518,7 @@ export function GuestPortal() {
       {/* Cancel Confirmation Modal */}
       {showCancelModal && selectedBooking && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-[560px] w-full p-8 shadow-2xl">
+          <div className="bg-white rounded-2xl max-w-[560px] w-full p-5 md:p-8 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-[#fee2e2] rounded-xl flex items-center justify-center">
