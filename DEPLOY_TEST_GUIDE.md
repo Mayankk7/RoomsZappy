@@ -29,6 +29,10 @@ Copy the connection string as `DATABASE_URL`.
 Set these in Render service Environment:
 - `PG_SSL=true`
 - `REQUIRE_EMAIL_OTP=false`
+- Optional Makecorps live pricing env vars:
+  - `USE_MOCK_MAKECORPS=false`
+  - `MAKECORPS_API_BASE_URL=https://api.makcorps.com`
+  - `MAKECORPS_API_KEY=<your_makecorps_key>`
 - Optional email env vars:
   - `SMTP_USER`
   - `SMTP_PASS`

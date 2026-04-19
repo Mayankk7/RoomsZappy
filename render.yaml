@@ -20,6 +20,12 @@ services:
         value: "false"
       - key: PG_SSL
         value: "true"
+      - key: USE_MOCK_MAKECORPS
+        value: "false"
+      - key: MAKECORPS_API_BASE_URL
+        value: "https://api.makcorps.com"
+      - key: MAKECORPS_API_KEY
+        sync: false
       - key: SMTP_USER
         sync: false
       - key: SMTP_PASS
