@@ -1,29 +1,26 @@
 const express = require("express")
 const router = express.Router();
+const { authenticate } = require("../middleware/authMiddleware");
+const { authorizeRoles, authorizeAdmin } = require("../middleware/rbacMiddleware");
+const {
+  getRooms,
+  getRoomById,
+  addRoom,
+  updateRoom,
+  deleteRoom,
+  adminCreateRoom,
+  adminUpdateRoom,
+  adminDeleteRoom
+} = require("../controllers/rooms");
 
-const { getRooms, getRoombyId, AddRoom, DeleteRoom } = require("../controllers/rooms")
+router.get("/", getRooms);
+router.get("/:id", getRoomById);
+router.post("/", authenticate, authorizeRoles('super_admin', 'manager', 'hotel_manager'), addRoom);
+router.put("/:id", authenticate, authorizeRoles('super_admin', 'manager', 'hotel_manager'), updateRoom);
+router.delete("/:id", authenticate, authorizeRoles('super_admin', 'manager', 'hotel_manager'), deleteRoom);
 
-
-//Rooms Route 
-//provides all the rooms present in the database 
-//@public route 
-router.get("/getallrooms", getRooms)
-
-//Rooms Route
-//provides details of room with particular id from database
-//@public route
-router.post("/getroombyid", getRoombyId)
-
-
-//Rooms Route 
-//allows admin to add a new room into database 
-//@protected route only for admins 
-router.post("/addroom", AddRoom)
-
-//Rooms Route 
-//allows admin to delete a room from database
-//@protected route only for admin 
-router.delete("/deleteroom/:id", DeleteRoom)
-
+router.post('/admin/create', authenticate, authorizeAdmin, adminCreateRoom);
+router.put('/admin/:id/update', authenticate, authorizeAdmin, adminUpdateRoom);
+router.delete('/admin/:id/delete', authenticate, authorizeAdmin, adminDeleteRoom);
 
 module.exports = router;

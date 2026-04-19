@@ -1,29 +1,29 @@
 const express = require('express');
-const { BookRoom, getBookingById, CancelBooking, getBookings } = require('../controllers/bookings');
+const { authenticate, authenticateOptional } = require('../middleware/authMiddleware');
+const { BookRoom, getBookingById, CancelBooking, DeleteBooking, getBookings } = require('../controllers/bookings');
 const router = express.Router();
 
 //Bookings Route 
 //Allows a user to book a room 
 //@public route
-router.post("/bookroom", BookRoom)
+router.post("/bookroom", authenticateOptional, BookRoom)
+
+// New explicit booking create endpoint
+router.post("/create", authenticateOptional, BookRoom)
 
 
-//Bookings Route 
-//Allows a user to get a room booking 
-//@public route
-router.post("/getbookingsbyuserid", getBookingById)
+// Optional list endpoint for admin/internal tooling
+router.get("/", authenticate, getBookings)
 
+// Authenticated user/admin booking history
+router.post("/getbookingsbyuserid", authenticate, getBookingById)
 
-//Bookings Route 
-//Allows a user to cancel a booking 
-//@public route
-router.post("/cancelbooking", CancelBooking)
+// Existing soft-cancel endpoint
+router.post("/cancel", CancelBooking)
 
-
-//Bookings Route 
-//Allows a user to get all bookings 
-//@public route
-router.get("/getallbookings", getBookings)
+// New hard-delete endpoint
+router.delete("/delete", DeleteBooking)
+router.delete("/:bookingid", DeleteBooking)
 
 
 module.exports = router

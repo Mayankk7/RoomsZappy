@@ -1,17 +1,22 @@
-const mongoose = require("mongoose")
+// Postgres (Neon) connection using node-postgres
+const { Pool } = require('pg');
 
-var uri = "mongodb+srv://User:User@cluster0.xgg1s.mongodb.net/mern?retryWrites=true&w=majority";
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+    throw new Error('DATABASE_URL is not set. Add it to your environment configuration.');
+}
 
-mongoose.connect(uri, {useUnifiedTopology : true, useNewUrlParser: true});
+const pool = new Pool({
+    connectionString,
+    ssl: process.env.PG_SSL === 'false' ? false : { rejectUnauthorized: false }
+});
 
-var connection = mongoose.connection;
+pool.on('connect', () => {
+    console.log('Postgres Database Connected Successfully');
+});
 
-connection.on('error', ()=>{
-    console.log("Database Connected Failed ");
-})
+pool.on('error', (err) => {
+    console.error('Postgres Database Connection Error', err);
+});
 
-connection.on('connected', ()=>{
-    console.log("Database Connected Successfully");
-})
-
-module.exports = mongoose;
+module.exports = pool;

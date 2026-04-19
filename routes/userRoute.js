@@ -1,39 +1,17 @@
 const express = require("express")
 const router = express.Router();
-const { getUsers, deleteUser } = require("../controllers/user");
-const { registerUser, loginUser, resetPassword, forgotPassword } = require("../controllers/auth")
+const { authenticate } = require("../middleware/authMiddleware");
+const { authorizeRoles } = require("../middleware/rbacMiddleware");
+const { registerUser, loginUser, getCurrentUser, sendRegisterOtp, verifyRegisterOtp } = require("../controllers/auth");
+const { getUsers, assignRole, deleteUser } = require("../controllers/user");
 
-
-//Auth Route
-//route to allows a user to register
-//@public route /register
-router.post("/register", registerUser)
-
-//Auth Route
-//route to login a user using email and password 
-//@protected route validates only registered user
-router.post("/login", loginUser)
-
-//User Route 
-//route to get all users on home screen 
-//@protected route /getallusers
-router.get('/getallusers', getUsers)
-
-
-//Auth Route 
-//route to generate a reset password request 
-//@public route
-router.post('/forgot', forgotPassword)
-
-
-//Auth Route
-//route to allow a user to reset password 
-//@protected route 
-router.patch('/reset/:id', resetPassword)
-
-//User Route
-//route to delete a user from database
-//@protected route only for admins
-router.delete('/deleteuser/:id', deleteUser)
+router.post("/register", registerUser);
+router.post("/send-register-otp", sendRegisterOtp);
+router.post("/verify-register-otp", verifyRegisterOtp);
+router.post("/login", loginUser);
+router.get("/me", authenticate, getCurrentUser);
+router.get("/", authenticate, authorizeRoles('super_admin', 'manager'), getUsers);
+router.patch("/:id/role", authenticate, authorizeRoles('super_admin'), assignRole);
+router.delete("/:id", authenticate, authorizeRoles('super_admin'), deleteUser);
 
 module.exports = router;
